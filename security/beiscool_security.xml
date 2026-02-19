@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Categoría del Módulo -->
+    <record id="beiscool_module_category" model="ir.module.category">
+        <field name="name">Beiscool</field>
+        <field name="description">Gestión de Copas y Torneos de Fútbol</field>
+        <field name="sequence">10</field>
+    </record>
+
+    <!-- Grupos de Seguridad -->
+    <record id="beiscool_group_user" model="res.groups">
+        <field name="name">Usuario Beiscool</field>
+        <field name="category_id" ref="beiscool_module_category"/>
+    </record>
+
+    <record id="beiscool_group_manager" model="res.groups">
+        <field name="name">Gerente Beiscool</field>
+        <field name="category_id" ref="beiscool_module_category"/>
+    </record>
+
+    <record id="beiscool_group_admin" model="res.groups">
+        <field name="name">Administrador Beiscool</field>
+        <field name="category_id" ref="beiscool_module_category"/>
+    </record>
+
+    <!-- Reglas de Acceso para Copa -->
+    <record id="beiscool_copa_rule" model="ir.rule">
+        <field name="name">Beiscool Copa: multi-company</field>
+        <field name="model_id" ref="model_beiscool_copa"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+
+    <!-- Reglas de Acceso para Equipo -->
+    <record id="beiscool_team_rule" model="ir.rule">
+        <field name="name">Beiscool Equipo: multi-company</field>
+        <field name="model_id" ref="model_beiscool_team"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+
+    <!-- Reglas de Acceso para Jugador -->
+    <record id="beiscool_player_rule" model="ir.rule">
+        <field name="name">Beiscool Jugador: multi-company</field>
+        <field name="model_id" ref="model_beiscool_player"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+
+    <!-- Reglas de Acceso para Partido -->
+    <record id="beiscool_match_rule" model="ir.rule">
+        <field name="name">Beiscool Partido: multi-company</field>
+        <field name="model_id" ref="model_beiscool_match"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+
+    <!-- Reglas de Acceso para Árbitro -->
+    <record id="beiscool_referee_rule" model="ir.rule">
+        <field name="name">Beiscool Árbitro: multi-company</field>
+        <field name="model_id" ref="model_beiscool_referee"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+
+    <!-- Reglas de Acceso para Standings -->
+    <record id="beiscool_standings_rule" model="ir.rule">
+        <field name="name">Beiscool Standings: multi-company</field>
+        <field name="model_id" ref="model_beiscool_standings"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+    </record>
+</odoo>

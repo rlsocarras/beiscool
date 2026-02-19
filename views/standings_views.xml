@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Acción para Standings -->
+    <record id="beiscool_standings_action" model="ir.actions.act_window">
+        <field name="name">Tabla de Posiciones</field>
+        <field name="res_model">beiscool.standings</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Consulta la tabla de posiciones de las copas
+            </p>
+        </field>
+    </record>
+
+    <!-- Vista Kanban de Standings - Estilo MLB -->
+    <record id="beiscool_standings_kanban" model="ir.ui.view">
+        <field name="name">beiscool.standings.kanban</field>
+        <field name="model">beiscool.standings</field>
+        <field name="arch" type="xml">
+            <kanban string="Tabla de Posiciones" default_group_by="copa_id" sample="1">
+                <field name="position"/>
+                <field name="team_id"/>
+                <field name="copa_id"/>
+                <field name="matches_played"/>
+                <field name="matches_won"/>
+                <field name="matches_lost"/>
+                <field name="runs_scored"/>
+                <field name="runs_allowed"/>
+                <field name="run_differential"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click">
+                            <!-- Barra de posición con gradiente según ranking -->
+                            <div t-att-class="record.position.raw_value == 1 ? 'bg-warning py-2' : record.position.raw_value == 2 ? 'bg-secondary py-2' : record.position.raw_value == 3 ? 'bg-danger py-2' : 'bg-dark py-2'">
+                                <div class="d-flex justify-content-between align-items-center px-2">
+                                    <span class="fs-4 fw-bold">
+                                        <t t-if="record.position.raw_value == 1">🥇</t>
+                                        <t t-elif="record.position.raw_value == 2">🥈</t>
+                                        <t t-elif="record.position.raw_value == 3">🥉</t>
+                                        <t t-else="t-else">#<field name="position"/></t>
+                                    </span>
+                                    <span class="text-white fs-5 fw-bold" t-esc="record.team_id.value"/>
+                                </div>
+                            </div>
+                            <div class="o_kanban_card_body p-0">
+                                <!-- Copa -->
+                                <div class="bg-primary bg-opacity-25 text-center py-1" t-if="record.copa_id.value">
+                                    <i class="fa fa-trophy text-warning me-1"/><field name="copa_id"/>
+                                </div>
+                                <!-- Estadísticas principales estilo MLB -->
+                                <div class="row g-0 text-center border-bottom">
+                                    <div class="col-4 border-end">
+                                        <div class="py-2">
+                                            <div class="h3 mb-0 text-success"><field name="matches_won"/></div>
+                                            <small class="text-muted">G</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-4 border-end">
+                                        <div class="py-2">
+                                            <div class="h3 mb-0 text-danger"><field name="matches_lost"/></div>
+                                            <small class="text-muted">P</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="py-2">
+                                            <div class="h3 mb-0"><field name="matches_played"/></div>
+                                            <small class="text-muted">JJ</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Estadísticas de carreras -->
+                                <div class="row g-0 text-center">
+                                    <div class="col-4 border-end">
+                                        <div class="py-2">
+                                            <div class="h6 mb-0 text-primary"><field name="runs_scored"/></div>
+                                            <small class="text-muted">CA</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-4 border-end">
+                                        <div class="py-2">
+                                            <div class="h6 mb-0 text-danger"><field name="runs_allowed"/></div>
+                                            <small class="text-muted">CP</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-4">
+                                        <div class="py-2">
+                                            <div class="h6 mb-0">
+                                                <t t-if="record.run_differential.raw_value &gt; 0">+</t><field name="run_differential"/>
+                                            </div>
+                                            <small class="text-muted">Dif</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Porcentaje de Victorias -->
+                                <div class="bg-dark text-white text-center py-2">
+                                    <div class="h4 mb-0">
+                                        <i class="fa fa-percent text-warning me-1"/><t t-esc="(record.matches_won.raw_value / (record.matches_played.raw_value or 1) * 100).toFixed(3)"/>%
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Vista Tree (List) de Standings -->
+    <record id="beiscool_standings_list" model="ir.ui.view">
+        <field name="name">beiscool.standings.list</field>
+        <field name="model">beiscool.standings</field>
+        <field name="arch" type="xml">
+            <list string="Tabla de Posiciones" multi_edit="1" sample="1">
+                <field name="position"/>
+                <field name="team_id"/>
+                <field name="copa_id"/>
+                <field name="matches_played" string="JJ"/>
+                <field name="matches_won" string="G"/>
+                <field name="matches_lost" string="P"/>
+                <field name="runs_scored" string="CA"/>
+                <field name="runs_allowed" string="CP"/>
+                <field name="run_differential" string="DIF"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Vista Form de Standings -->
+    <record id="beiscool_standings_form" model="ir.ui.view">
+        <field name="name">beiscool.standings.form</field>
+        <field name="model">beiscool.standings</field>
+        <field name="arch" type="xml">
+            <form string="Posición en Tabla">
+                <sheet>
+                    <group>
+                        <group string="Equipo">
+                            <field name="copa_id"/>
+                            <field name="team_id"/>
+                        </group>
+                        <group string="Posición">
+                            <field name="position"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Partidos">
+                            <field name="matches_played" string="JJ - Partidos Jugados"/>
+                            <field name="matches_won" string="G - Partidos Ganados"/>
+                            <field name="matches_lost" string="P - Partidos Perdidos"/>
+                        </group>
+                        <group string="Carreras">
+                            <field name="runs_scored" string="CA - Carreras Anotadas"/>
+                            <field name="runs_allowed" string="CP - Carreras Permitidas"/>
+                            <field name="run_differential" string="DIF - Diferencia de Carreras"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>

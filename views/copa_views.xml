@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Vista Tree (List) de Copa - DEBE estar antes de la acción que la referencia -->
+    <record id="beiscool_copa_list" model="ir.ui.view">
+        <field name="name">beiscool.copa.list</field>
+        <field name="model">beiscool.copa</field>
+        <field name="arch" type="xml">
+            <list string="Copas" multi_edit="1" sample="1">
+                <field name="name"/>
+                <field name="date_start"/>
+                <field name="date_end"/>
+                <field name="location"/>
+                <field name="team_quantity"/>
+                <field name="player_quantity"/>
+                <field name="state"/>
+                <field name="rounds"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Vista Form de Copa -->
+    <record id="beiscool_copa_form" model="ir.ui.view">
+        <field name="name">beiscool.copa.form</field>
+        <field name="model">beiscool.copa</field>
+        <field name="arch" type="xml">
+            <form string="Copa de Béisbol">
+                <header>
+                    <button name="action_draft" string="Borrador" type="object" 
+                            class="btn-secondary" invisible="state != 'in_progress'"/>
+                    <button name="action_in_progress" string="Iniciar Copa" type="object" 
+                            class="btn-primary" invisible="state != 'draft'"/>
+                    <button name="action_generate_calendar" string="Generar Calendario" 
+                            type="object" class="btn-primary" 
+                            invisible="state != 'draft'"/>
+                    <button name="action_finished" string="Finalizar Copa" type="object" 
+                            class="btn-success" invisible="state != 'in_progress'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,in_progress,finished"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group string="Información General">
+                            <field name="name" placeholder="Nombre de la Copa"/>
+                            <field name="date_start"/>
+                            <field name="date_end"/>
+                            <field name="location"/>
+                            <field name="organizer"/>
+                        </group>
+                        <group string="Configuración">
+                            <field name="rounds"/>
+                            <field name="has_semifinal"/>
+                            <field name="has_final"/>
+                            <field name="team_quantity"/>
+                            <field name="player_quantity"/>
+                        </group>
+                    </group>
+                    <group string="Descripción">
+                        <field name="description" nolabel="1" placeholder="Descripción de la copa..."/>
+                    </group>
+                    <notebook>
+                        <page string="Equipos" name="teams">
+                            <field name="team_ids">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="player_quantity"/>
+                                    <field name="captain_id"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Capitanes" name="captains">
+                            <field name="captain_ids">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="email"/>
+                                    <field name="phone"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Árbitros" name="referees">
+                            <field name="referee_ids">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="certification"/>
+                                    <field name="contact"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Partidos" name="matches">
+                            <field name="match_ids">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="home_team_id"/>
+                                    <field name="away_team_id"/>
+                                    <field name="home_runs"/>
+                                    <field name="away_runs"/>
+                                    <field name="match_date"/>
+                                    <field name="stage"/>
+                                    <field name="state"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Tabla de Posiciones" name="standings">
+                            <field name="standings_ids">
+                                <list>
+                                    <field name="position"/>
+                                    <field name="team_id"/>
+                                    <field name="matches_played"/>
+                                    <field name="matches_won"/>
+                                    <field name="matches_lost"/>
+                                    <field name="runs_scored"/>
+                                    <field name="runs_allowed"/>
+                                    <field name="run_differential"/>
+                                    <field name="points"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Vista Kanban de Copa -->
+    <record id="beiscool_copa_kanban" model="ir.ui.view">
+        <field name="name">beiscool.copa.kanban</field>
+        <field name="model">beiscool.copa</field>
+        <field name="arch" type="xml">
+            <kanban string="Copas" sample="1">
+                <field name="name"/>
+                <field name="date_start"/>
+                <field name="date_end"/>
+                <field name="location"/>
+                <field name="state"/>
+                <field name="team_quantity"/>
+                <field name="captain_count"/>
+                <field name="match_count"/>
+                <field name="referee_count"/>
+                <field name="rounds"/>
+                <field name="team_ids"/>
+                <field name="match_ids"/>
+                <field name="referee_ids"/>
+                <field name="standings_ids"/>
+                <field name="champion_id"/>
+                <field name="description"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click">
+                            <!-- Encabezado con color según estado -->
+                            <div class="o_kanban_card_header">
+                                <div class="o_kanban_card_header_title">
+                                    <div class="o_kanban_tag_section">
+                                        <field name="state" widget="label_selection" 
+                                               options="{'classes': {'draft': 'warning', 'in_progress': 'success', 'finished': 'info'}}"/>
+                                    </div>
+                                    <b class="o_kanban_record_title fs-5">
+                                        <field name="name"/>
+                                    </b>
+                                </div>
+                            </div>
+                            <div class="o_kanban_card_body">
+                                <!-- Información de ubicación y fechas -->
+                                <div class="row mb-2">
+                                    <div class="col-12">
+                                        <i class="fa fa-map-marker text-danger me-1"/>
+                                        <span class="text-muted" t-if="record.location.value" t-esc="record.location.value"/>
+                                        <span class="text-muted" t-else="t-else">Sin ubicación</span>
+                                    </div>
+                                </div>
+                                <div class="row mb-2">
+                                    <div class="col-6">
+                                        <i class="fa fa-calendar text-primary me-1"/>
+                                        <span class="small text-muted">Inicio:</span>
+                                        <div><field name="date_start" widget="date"/></div>
+                                    </div>
+                                    <div class="col-6">
+                                        <i class="fa fa-calendar-check-o text-success me-1"/>
+                                        <span class="small text-muted">Fin:</span>
+                                        <div><field name="date_end" widget="date"/></div>
+                                    </div>
+                                </div>
+                                <!-- Enlaces rápidos a relacionados con cantidades -->
+                                <div class="row mt-2 pt-2 border-top">
+                                    <div class="col-6 text-center">
+                                        <button name="%(beiscool_team_action)d" string="Equipos" context="{'default_copa_id': id}" type="action" class="btn btn-sm btn-outline-primary w-100">
+                                            <i class="fa fa-users me-1"/><field name="team_quantity"/>
+                                        </button>
+                                        <small class="text-muted d-block">Equipos</small>
+                                    </div>
+                                    <div class="col-6 text-center">
+                                        <button name="%(beiscool_match_action)d" string="Partidos" context="{'default_copa_id': id}" type="action" class="btn btn-sm btn-outline-success w-100">
+                                            <i class="fa fa-calendar me-1"/><field name="match_count"/>
+                                        </button>
+                                        <small class="text-muted d-block">Partidos</small>
+                                    </div>
+                                </div>
+                                <div class="row mt-2">
+                                    <div class="col-6 text-center">
+                                        <button name="%(beiscool_player_action)d" string="Capitanes" context="{'search_default_is_captain': True}" type="action" class="btn btn-sm btn-outline-warning w-100">
+                                            <i class="fa fa-star me-1"/><field name="captain_count"/>
+                                        </button>
+                                        <small class="text-muted d-block">Capitanes</small>
+                                    </div>
+                                    <div class="col-6 text-center">
+                                        <button name="%(beiscool_referee_action)d" string="Árbitros" context="{}" type="action" class="btn btn-sm btn-outline-secondary w-100">
+                                            <i class="fa fa-gavel me-1"/><field name="referee_count"/>
+                                        </button>
+                                        <small class="text-muted d-block">Árbitros</small>
+                                    </div>
+                                </div>
+                                <!-- Descripción -->
+                                <div class="row mt-2" t-if="record.description.value">
+                                    <div class="col-12">
+                                        <small class="text-muted text-truncate" t-esc="record.description.value"/>
+                                    </div>
+                                </div>
+                                <!-- Enlace a Página Pública -->
+                                <div class="row mt-2 pt-2 border-top">
+                                    <div class="col-12 text-center">
+                                        <a t-attf-href="/copa/{{record.id.raw_value}}" target="_blank" class="btn btn-sm btn-outline-dark w-100">
+                                            <i class="fa fa-globe me-1"/>Ver Página Pública
+                                        </a>
+                                    </div>
+                                </div>
+                                <!-- Enlace a Tabla de Posiciones -->
+                                <div class="row mt-2 pt-2 border-top">
+                                    <div class="col-12 text-center">
+                                        <button name="%(beiscool_standings_action)d" string="Tabla de Posiciones" context="{'default_copa_id': id}" type="action" class="btn btn-sm btn-outline-info w-100">
+                                            <i class="fa fa-list-ol me-1"/>Ver Tabla de Posiciones
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="o_kanban_card_footer">
+                                <div t-if="record.champion_id.value" class="text-center">
+                                    <i class="fa fa-trophy text-warning"/>
+                                    <b>Campeón: </b><field name="champion_id"/>
+                                </div>
+                                <div t-else="t-else" class="text-center text-muted">
+                                    <small>En competencia</small>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Vista Calendar de Copa -->
+    <record id="beiscool_copa_calendar" model="ir.ui.view">
+        <field name="name">beiscool.copa.calendar</field>
+        <field name="model">beiscool.copa</field>
+        <field name="arch" type="xml">
+            <calendar string="Fechas de Copas" date_start="date_start" date_stop="date_end" 
+                      color="state">
+                <field name="name"/>
+                <field name="location"/>
+            </calendar>
+        </field>
+    </record>
+
+    <!-- Acción para Copa -->
+    <record id="beiscool_copa_action" model="ir.actions.act_window">
+        <field name="name">Copas</field>
+        <field name="res_model">beiscool.copa</field>
+        <field name="view_mode">kanban,list,form,calendar</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Crea tu primera copa de béisbol
+            </p>
+        </field>
+    </record>
+</odoo>

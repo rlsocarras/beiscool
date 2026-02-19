@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Acción para Árbitro -->
+    <record id="beiscool_referee_action" model="ir.actions.act_window">
+        <field name="name">Árbitros</field>
+        <field name="res_model">beiscool.referee</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Crea tu primer árbitro
+            </p>
+        </field>
+    </record>
+
+    <!-- Vista Kanban de Árbitro -->
+    <record id="beiscool_referee_kanban" model="ir.ui.view">
+        <field name="name">beiscool.referee.kanban</field>
+        <field name="model">beiscool.referee</field>
+        <field name="arch" type="xml">
+            <kanban string="Árbitros" sample="1">
+                <field name="name"/>
+                <field name="image"/>
+                <field name="certification"/>
+                <field name="email"/>
+                <field name="phone"/>
+                <field name="level"/>
+                <field name="experience_years"/>
+                <field name="is_active"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click">
+                            <div class="o_kanban_card_header">
+                                <div class="o_kanban_card_header_title">
+                                    <div class="o_kanban_tag_section">
+                                        <field name="is_active" widget="boolean_favorite" nolabel="true"/>
+                                    </div>
+                                    <b class="o_kanban_record_title fs-5">
+                                        <field name="name"/>
+                                    </b>
+                                </div>
+                            </div>
+                            <div class="o_kanban_card_body">
+                                <!-- Imagen del árbitro -->
+                                <div class="text-center mb-2" t-if="record.image.raw_value">
+                                    <field name="image" widget="image" class="oe_avatar o_portal_profile_avatar" options="{'preview_image': 'image', 'size': [80, 80]}"/>
+                                </div>
+                                <div class="text-center mb-2" t-else="t-else">
+                                    <img t-att-src="'/web/static/img/placeholder_user.png'" class="oe_avatar oe_kanban_avatar" alt="Árbitro"/>
+                                </div>
+                                <!-- Nivel y certificación -->
+                                <div class="text-center mb-2">
+                                    <span class="badge" t-att-class="record.level.raw_value === 'international' ? 'bg-danger' : record.level.raw_value === 'national' ? 'bg-warning' : record.level.raw_value === 'regional' ? 'bg-info' : 'bg-secondary'">
+                                        <field name="level"/>
+                                    </span>
+                                </div>
+                                <!-- Certificación -->
+                                <div class="text-center mb-2" t-if="record.certification.value">
+                                    <small class="text-muted" t-esc="record.certification.value"/>
+                                </div>
+                                <!-- Años de experiencia -->
+                                <div class="row mt-2 pt-2 border-top">
+                                    <div class="col-12 text-center">
+                                        <div class="h4 mb-0 text-primary"><field name="experience_years"/></div>
+                                        <small class="text-muted">Años de Experiencia</small>
+                                    </div>
+                                </div>
+                                <!-- Información de contacto -->
+                                <div class="row mt-2">
+                                    <div class="col-12">
+                                        <div t-if="record.email.value" class="text-center">
+                                            <i class="fa fa-envelope text-muted me-1"/>
+                                            <small class="text-muted" t-esc="record.email.value"/>
+                                        </div>
+                                        <div t-if="record.phone.value" class="text-center mt-1">
+                                            <i class="fa fa-phone text-muted me-1"/>
+                                            <small class="text-muted" t-esc="record.phone.value"/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Vista Tree (List) de Árbitro -->
+    <record id="beiscool_referee_list" model="ir.ui.view">
+        <field name="name">beiscool.referee.list</field>
+        <field name="model">beiscool.referee</field>
+        <field name="arch" type="xml">
+            <list string="Árbitros" multi_edit="1" sample="1">
+                <field name="name"/>
+                <field name="certification"/>
+                <field name="email"/>
+                <field name="phone"/>
+                <field name="level"/>
+                <field name="experience_years"/>
+                <field name="is_active"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Vista Form de Árbitro -->
+    <record id="beiscool_referee_form" model="ir.ui.view">
+        <field name="name">beiscool.referee.form</field>
+        <field name="model">beiscool.referee</field>
+        <field name="arch" type="xml">
+            <form string="Árbitro">
+                <sheet>
+                    <field name="image" widget="image" class="oe_avatar" 
+                           options="{'preview_image': 'image'}"/>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Nombre del Árbitro"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Información de Contacto">
+                            <field name="email"/>
+                            <field name="phone"/>
+                            <field name="contact"/>
+                        </group>
+                        <group string="Información Profesional">
+                            <field name="certification"/>
+                            <field name="level"/>
+                            <field name="experience_years"/>
+                            <field name="is_active"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>

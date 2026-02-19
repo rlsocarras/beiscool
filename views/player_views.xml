@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Acción para Jugador -->
+    <record id="beiscool_player_action" model="ir.actions.act_window">
+        <field name="name">Jugadores</field>
+        <field name="res_model">beiscool.player</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Crea tu primer jugador
+            </p>
+        </field>
+    </record>
+
+    <!-- Vista Kanban de Jugador -->
+    <record id="beiscool_player_kanban" model="ir.ui.view">
+        <field name="name">beiscool.player.kanban</field>
+        <field name="model">beiscool.player</field>
+        <field name="arch" type="xml">
+            <kanban string="Jugadores" default_group_by="team_ids" default_order="is_captain desc" sample="1">
+                <field name="name"/>
+                <field name="image"/>
+                <field name="email"/>
+                <field name="phone"/>
+                <field name="is_captain"/>
+                <field name="position"/>
+                <field name="number"/>
+                <field name="team_ids"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click">
+                            <div class="o_kanban_card_header">
+                                <div class="o_kanban_card_header_title">
+                                    <div class="o_kanban_tag_section">
+                                        <span t-if="record.is_captain.raw_value" class="badge bg-warning text-dark">
+                                            <i class="fa fa-star me-1"/>Capitán
+                                        </span>
+                                    </div>
+                                    <b class="o_kanban_record_title fs-5">
+                                        <field name="name"/>
+                                        <span t-if="record.number.raw_value" class="badge bg-secondary ms-1" t-esc="'#' + record.number.value"/>
+                                    </b>
+                                </div>
+                            </div>
+                            <div class="o_kanban_card_body">
+                                <!-- Imagen del jugador -->
+                                <div class="text-center mb-2" t-if="record.image.raw_value">
+                                    <field name="image" widget="image" class="oe_avatar o_portal_profile_avatar" options="{'preview_image': 'image', 'size': [200, 200]}"/>
+                                </div>
+                                <div class="text-center mb-2" t-else="t-else">
+                                    <img t-att-src="'/web/static/img/placeholder_user.png'" class="oe_avatar oe_kanban_avatar" alt="Jugador"/>
+                                </div>
+                                <!-- Posición -->
+                                <div class="text-center mb-2" t-if="record.position.value">
+                                    <span class="badge bg-info">
+                                        <field name="position"/>
+                                    </span>
+                                </div>
+                                <!-- Información de contacto -->
+                                <div class="row mt-2">
+                                    <div class="col-12">
+                                        <div t-if="record.email.value" class="text-center">
+                                            <i class="fa fa-envelope text-muted me-1"/>
+                                            <small class="text-muted" t-esc="record.email.value"/>
+                                        </div>
+                                        <div t-if="record.phone.value" class="text-center mt-1">
+                                            <i class="fa fa-phone text-muted me-1"/>
+                                            <small class="text-muted" t-esc="record.phone.value"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Equipos -->
+                                <div class="row mt-2 pt-2 border-top">
+                                    <div class="col-12 text-center">
+                                        <field name="team_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Vista Tree (List) de Jugador -->
+    <record id="beiscool_player_list" model="ir.ui.view">
+        <field name="name">beiscool.player.list</field>
+        <field name="model">beiscool.player</field>
+        <field name="arch" type="xml">
+            <list string="Jugadores" multi_edit="1" sample="1">
+                <field name="name"/>
+                <field name="email"/>
+                <field name="phone"/>
+                <field name="is_captain"/>
+                <field name="position"/>
+                <field name="number"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Vista Form de Jugador -->
+    <record id="beiscool_player_form" model="ir.ui.view">
+        <field name="name">beiscool.player.form</field>
+        <field name="model">beiscool.player</field>
+        <field name="arch" type="xml">
+            <form string="Jugador">
+                <sheet>
+                    <field name="image" widget="image" class="oe_avatar" 
+                           options="{'preview_image': 'image_medium'}"/>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Nombre del Jugador"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Información de Contacto">
+                            <field name="email"/>
+                            <field name="phone"/>
+                            <field name="contact"/>
+                        </group>
+                        <group string="Información del Jugador">
+                            <field name="is_captain"/>
+                            <field name="birth_date"/>
+                            <field name="position"/>
+                            <field name="number"/>
+                        </group>
+                    </group>
+                    <group string="Equipos">
+                        <field name="team_ids" widget="many2many_tags" 
+                               options="{'color_field': 'color'}"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>

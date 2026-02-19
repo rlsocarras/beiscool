@@ -1,0 +1,594 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Página pública de Copa de Béisbol -->
+    <template id="copa_page" name="Copa de Béisbol">
+        <t t-call="website.layout">
+            <!-- Banner estilo béisbol -->
+            <div class="bg-dark text-white text-center py-5" style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);">
+                <div class="container">
+                    <h1 class="display-3 fw-bold">
+                        <i class="fa fa-trophy text-warning me-3"/>
+                        <t t-esc="copa.name"/>
+                    </h1>
+                    <p class="lead">
+                        <t t-if="copa.location">
+                            <i class="fa fa-map-marker me-2"/>
+                            <t t-esc="copa.location"/>
+                        </t>
+                        <t t-if="copa.date_start">
+                            <span class="mx-3">|</span>
+                            <i class="fa fa-calendar me-2"/>
+                            <t t-esc="copa.date_start"/> 
+                            <t t-if="copa.date_end"> - <t t-esc="copa.date_end"/></t>
+                        </t>
+                    </p>
+                    <!-- Estado de la copa -->
+                    <span class="badge" t-att-class="'bg-success' if copa.state == 'in_progress' else 'bg-warning' if copa.state == 'draft' else 'bg-info'">
+                        <t t-if="copa.state == 'draft'">Borrador</t>
+                        <t t-if="copa.state == 'in_progress'">En Progreso</t>
+                        <t t-if="copa.state == 'finished'">Finalizado</t>
+                    </span>
+                </div>
+            </div>
+
+            <!-- Estadísticas de la copa -->
+            <div class="container py-4">
+                <div class="row text-center">
+                    <div class="col-md-3 col-6 mb-3">
+                        <div class="card bg-primary text-white">
+                            <div class="card-body">
+                                <h2 class="display-4"><t t-esc="copa.team_quantity"/></h2>
+                                <p class="mb-0">Equipos</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-6 mb-3">
+                        <div class="card bg-success text-white">
+                            <div class="card-body">
+                                <h2 class="display-4"><t t-esc="copa.player_quantity"/></h2>
+                                <p class="mb-0">Jugadores</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-6 mb-3">
+                        <div class="card bg-info text-white">
+                            <div class="card-body">
+                                <h2 class="display-4"><t t-esc="copa.match_count"/></h2>
+                                <p class="mb-0">Partidos</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 col-6 mb-3">
+                        <div class="card bg-warning text-dark">
+                            <div class="card-body">
+                                <h2 class="display-4"><t t-esc="copa.captain_count"/></h2>
+                                <p class="mb-0">Capitanes</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Equipos Participantes -->
+            <div class="container py-4">
+                <h2 class="border-bottom pb-2 mb-4">
+                    <i class="fa fa-users text-primary me-2"/>
+                    Equipos Participantes
+                </h2>
+                <div class="row">
+                    <t t-foreach="teams" t-as="team">
+                        <div class="col-md-4 col-sm-6 mb-4">
+                            <div class="card h-100 shadow-sm">
+                                <div class="card-body text-center">
+                                    <t t-if="team.image">
+                                        <img t-att-src="'/web/image/beiscool.team/%s/image' % team.id" 
+                                             class="rounded-circle mb-3" 
+                                             style="width: 100px; height: 100px; object-fit: cover;"
+                                             alt="team.name"/>
+                                    </t>
+                                    <t t-else="t-else">
+                                        <div class="rounded-circle bg-secondary d-inline-flex align-items-center justify-content-center mb-3" 
+                                             style="width: 100px; height: 100px;">
+                                            <i class="fa fa-users text-white" style="font-size: 40px;"/>
+                                        </div>
+                                    </t>
+                                    <h5 class="card-title">
+                                        <a t-atthref="'/equipo/%s' % team.id" class="text-decoration-none">
+                                            <t t-esc="team.name"/>
+                                        </a>
+                                    </h5>
+                                    <p class="text-muted mb-1">
+                                        <t t-esc="team.player_quantity"/> Jugadores
+                                    </p>
+                                    <t t-if="team.captain_id">
+                                        <span class="badge bg-warning text-dark">
+                                            <i class="fa fa-star me-1"/>
+                                            <t t-esc="team.captain_id.name"/>
+                                        </span>
+                                    </t>
+                                </div>
+                                <div class="card-footer bg-white">
+                                    <a t-attf-href="/equipo/{{team.id}}" class="btn btn-primary btn-sm w-100">
+                                        Ver Equipo <i class="fa fa-arrow-right ms-1"/>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </div>
+            </div>
+
+            <!-- Tabla de Posiciones -->
+            <t t-if="standings">
+                <div class="bg-light py-4">
+                    <div class="container">
+                        <h2 class="border-bottom pb-2 mb-4">
+                            <i class="fa fa-list-ol text-success me-2"/>
+                            Tabla de Posiciones
+                        </h2>
+                        <div class="table-responsive">
+                            <table class="table table-striped table-hover">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th class="text-center">#</th>
+                                        <th>Equipo</th>
+                                        <th class="text-center">JJ</th>
+                                        <th class="text-center">G</th>
+                                        <th class="text-center">P</th>
+                                        <th class="text-center">CA</th>
+                                        <th class="text-center">CP</th>
+                                        <th class="text-center">DIF</th>
+                                        <th class="text-center">%</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-foreach="standings" t-as="s">
+                                        <tr>
+                                            <td class="text-center">
+                                                <t t-if="s.position == 1">
+                                                    <span class="badge bg-warning text-dark">🥇</span>
+                                                </t>
+                                                <t t-elif="s.position == 2">
+                                                    <span class="badge bg-secondary">🥈</span>
+                                                </t>
+                                                <t t-elif="s.position == 3">
+                                                    <span class="badge bg-danger">🥉</span>
+                                                </t>
+                                                <t t-else="t-else">
+                                                    <t t-esc="s.position"/>
+                                                </t>
+                                            </td>
+                                            <td>
+                                                <a t-attf-href="/equipo/{{s.team_id.id}}" class="text-decoration-none">
+                                                    <t t-esc="s.team_id.name"/>
+                                                </a>
+                                            </td>
+                                            <td class="text-center"><t t-esc="s.matches_played"/></td>
+                                            <td class="text-center text-success"><t t-esc="s.matches_won"/></td>
+                                            <td class="text-center text-danger"><t t-esc="s.matches_lost"/></td>
+                                            <td class="text-center"><t t-esc="s.runs_scored"/></td>
+                                            <td class="text-center"><t t-esc="s.runs_allowed"/></td>
+                                            <td class="text-center">
+                                                <t t-if="s.run_differential > 0">+</t><t t-esc="s.run_differential"/>
+                                            </td>
+                                            <td class="text-center">
+                                                <t t-if="s.matches_played > 0">
+                                                    <t t-esc="'{:.3f}'.format(s.matches_won / s.matches_played)"/>
+                                                </t>
+                                                <t t-else="t-else">.000</t>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </t>
+
+            <!-- Calendario de Partidos -->
+            <t t-if="all_matches">
+                <div class="bg-light py-4">
+                    <div class="container">
+                        <h2 class="border-bottom pb-2 mb-4">
+                            <i class="fa fa-calendar text-primary me-2"/>
+                            Calendario de Partidos
+                        </h2>
+                        <div class="row">
+                            <t t-foreach="all_matches" t-as="match">
+                                <div class="col-12 mb-3">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <div class="row align-items-center">
+                                                <!-- Fecha -->
+                                                <div class="col-md-2 col-12 text-center text-md-start mb-2 mb-md-0">
+                                                    <div class="fw-bold text-primary">
+                                                        <t t-esc="match.match_date_formatted"/>
+                                                    </div>
+                                                    <small class="text-muted">
+                                                        <t t-if="match.state == 'scheduled'">
+                                                            <span class="badge bg-warning text-dark">Programado</span>
+                                                        </t>
+                                                        <t t-elif="match.state == 'played'">
+                                                            <span class="badge bg-success">Jugado</span>
+                                                        </t>
+                                                        <t t-else="">
+                                                            <span class="badge bg-secondary"><t t-esc="match.state"/></span>
+                                                        </t>
+                                                    </small>
+                                                </div>
+                                                <!-- Equipo Local -->
+                                                <div class="col-md-4 col-5 text-end">
+                                                    <t t-if="match.home_team_id.image">
+                                                        <img t-att-src="'/web/image/beiscool.team/%s/image' % match.home_team_id.id" 
+                                                             style="width: 32px; height: 32px; border-radius: 50%;"/>
+                                                    </t>
+                                                    <t t-else="">
+                                                        <i class="fa fa-users text-muted"/>
+                                                    </t>
+                                                    <span class="fw-bold ms-2"><t t-esc="match.home_team_id.name"/></span>
+                                                </div>
+                                                <!-- Marcador -->
+                                                <div class="col-md-2 col-2 text-center">
+                                                    <span class="h4 mb-0">
+                                                        <t t-esc="match.display_score"/>
+                                                    </span>
+                                                </div>
+                                                <!-- Equipo Visitante -->
+                                                <div class="col-md-4 col-5 text-start">
+                                                    <span class="fw-bold me-2"><t t-esc="match.away_team_id.name"/></span>
+                                                    <t t-if="match.away_team_id.image">
+                                                        <img t-att-src="'/web/image/beiscool.team/%s/image' % match.away_team_id.id" 
+                                                             style="width: 32px; height: 32px; border-radius: 50%;"/>
+                                                    </t>
+                                                    <t t-else="">
+                                                        <i class="fa fa-users text-muted"/>
+                                                    </t>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </t>
+                        </div>
+                    </div>
+                </div>
+            </t>
+
+            <!-- Últimos Partidos -->
+            <t t-if="past_matches">
+                <div class="container py-4">
+                    <h2 class="border-bottom pb-2 mb-4">
+                        <i class="fa fa-history text-info me-2"/>
+                        Últimos Partidos
+                    </h2>
+                    <div class="row">
+                        <t t-foreach="past_matches" t-as="match">
+                            <div class="col-md-6 col-lg-4 mb-3">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <div class="row align-items-center">
+                                            <div class="col-4 text-end">
+                                                <t t-if="match.home_team_id.image">
+                                                    <img t-att-src="'/web/image/beiscool.team/%s/image' % match.home_team_id.id" 
+                                                         style="width: 40px; height: 40px; border-radius: 50%;"/>
+                                                </t>
+                                                <t t-else="t-else">
+                                                    <i class="fa fa-users fa-2x text-muted"/>
+                                                </t>
+                                                <div class="small fw-bold"><t t-esc="match.home_team_id.name"/></div>
+                                            </div>
+                                            <div class="col-4 text-center">
+                                                <div class="h3 mb-0">
+                                                    <t t-esc="match.display_score"/>
+                                                </div>
+                                                <small class="text-muted"><t t-esc="match.match_date"/></small>
+                                            </div>
+                                            <div class="col-4 text-start">
+                                                <t t-if="match.away_team_id.image">
+                                                    <img t-att-src="'/web/image/beiscool.team/%s/image' % match.away_team_id.id" 
+                                                         style="width: 40px; height: 40px; border-radius: 50%;"/>
+                                                </t>
+                                                <t t-else="t-else">
+                                                    <i class="fa fa-users fa-2x text-muted"/>
+                                                </t>
+                                                <div class="small fw-bold"><t t-esc="match.away_team_id.name"/></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+                </div>
+            </t>
+
+            <!-- Árbitros -->
+            <t t-if="referees">
+                <div class="container py-4">
+                    <h2 class="border-bottom pb-2 mb-4">
+                        <i class="fa fa-gavel text-secondary me-2"/>
+                        Árbitros
+                    </h2>
+                    <div class="row">
+                        <t t-foreach="referees" t-as="referee">
+                            <div class="col-md-3 col-sm-6 mb-4">
+                                <div class="card h-100">
+                                    <div class="card-body text-center">
+                                        <t t-if="referee.image">
+                                            <img t-att-src="'/web/image/beiscool.referee/%s/image' % referee.id" 
+                                                 class="rounded-circle mb-3"
+                                                 style="width: 80px; height: 80px; object-fit: cover;"/>
+                                        </t>
+                                        <t t-else="t-else">
+                                            <div class="rounded-circle bg-secondary d-inline-flex align-items-center justify-content-center mb-3" 
+                                                 style="width: 80px; height: 80px;">
+                                                <i class="fa fa-user text-white" style="font-size: 30px;"/>
+                                            </div>
+                                        </t>
+                                        <h6 class="card-title">
+                                            <t t-esc="referee.name"/>
+                                        </h6>
+                                        <t t-if="referee.certification">
+                                            <p class="text-muted small mb-1"><t t-esc="referee.certification"/></p>
+                                        </t>
+                                        <t t-if="referee.level">
+                                            <span class="badge" t-att-class="'bg-success' if referee.level == 'international' else 'bg-primary' if referee.level == 'national' else 'bg-info' if referee.level == 'regional' else 'bg-secondary'">
+                                                <t t-if="referee.level == 'international'">Internacional</t>
+                                                <t t-if="referee.level == 'national'">Nacional</t>
+                                                <t t-if="referee.level == 'regional'">Regional</t>
+                                                <t t-if="referee.level == 'local'">Local</t>
+                                            </span>
+                                        </t>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+                </div>
+            </t>
+
+            <!-- Descripción -->
+            <t t-if="copa.description">
+                <div class="bg-light py-4">
+                    <div class="container">
+                        <h2 class="border-bottom pb-2 mb-4">
+                            <i class="fa fa-info-circle text-muted me-2"/>
+                            Información
+                        </h2>
+                        <p class="lead">
+                            <t t-esc="copa.description"/>
+                        </p>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <!-- Página de Equipo -->
+    <template id="team_page" name="Equipo de Béisbol">
+        <t t-call="website.layout">
+            <!-- Header del equipo -->
+            <div class="bg-dark text-white text-center py-5" style="background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);">
+                <div class="container">
+                    <t t-if="team.image">
+                        <img t-att-src="'/web/image/beiscool.team/%s/image' % team.id" 
+                             class="rounded-circle mb-3 border border-4 border-warning"
+                             style="width: 150px; height: 150px; object-fit: cover;"/>
+                    </t>
+                    <t t-else="t-else">
+                        <div class="rounded-circle bg-secondary d-inline-flex align-items-center justify-content-center mb-3 border border-4 border-warning" 
+                             style="width: 150px; height: 150px;">
+                            <i class="fa fa-users text-white" style="font-size: 60px;"/>
+                        </div>
+                    </t>
+                    <h1 class="display-4 fw-bold">
+                        <t t-esc="team.name"/>
+                    </h1>
+                    <t t-if="copa">
+                        <p class="lead">
+                            <i class="fa fa-trophy text-warning me-2"/>
+                            <a t-attf-href="/copa/{{copa.id}}" class="text-white text-decoration-none">
+                                <t t-esc="copa.name"/>
+                            </a>
+                        </p>
+                    </t>
+                    <t t-if="team.captain_id">
+                        <span class="badge bg-warning text-dark fs-6">
+                            <i class="fa fa-star me-1"/>
+                            Capitán: <t t-esc="team.captain_id.name"/>
+                        </span>
+                    </t>
+                </div>
+            </div>
+
+            <!-- Estadísticas del equipo -->
+            <div class="container py-4">
+                <div class="row text-center">
+                    <div class="col-md-4 mb-3">
+                        <div class="card bg-primary text-white">
+                            <div class="card-body">
+                                <h2 class="display-4"><t t-esc="team.player_quantity"/></h2>
+                                <p class="mb-0">Jugadores</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="card bg-success text-white">
+                            <div class="card-body">
+                                <h2 class="display-4"><t t-esc="team.matches_won"/></h2>
+                                <p class="mb-0">Victorias</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 mb-3">
+                        <div class="card bg-danger text-white">
+                            <div class="card-body">
+                                <h2 class="display-4"><t t-esc="team.matches_played - team.matches_won"/></h2>
+                                <p class="mb-0">Derrotas</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Plantilla de Jugadores -->
+            <div class="container py-4">
+                <h2 class="border-bottom pb-2 mb-4">
+                    <i class="fa fa-users text-primary me-2"/>
+                    Plantilla
+                </h2>
+                <div class="row">
+                    <t t-foreach="players" t-as="player">
+                        <div class="col-md-3 col-sm-6 mb-4">
+                            <div class="card h-100">
+                                <div class="card-body text-center">
+                                    <t t-if="player.image">
+                                        <img t-att-src="'/web/image/beiscool.player/%s/image' % player.id" 
+                                             class="rounded-circle mb-3"
+                                             style="width: 80px; height: 80px; object-fit: cover;"/>
+                                    </t>
+                                    <t t-else="t-else">
+                                        <div class="rounded-circle bg-secondary d-inline-flex align-items-center justify-content-center mb-3" 
+                                             style="width: 80px; height: 80px;">
+                                            <i class="fa fa-user text-white" style="font-size: 30px;"/>
+                                        </div>
+                                    </t>
+                                    <h6 class="card-title">
+                                        <t t-esc="player.name"/>
+                                    </h6>
+                                    <t t-if="player.is_captain">
+                                        <span class="badge bg-warning text-dark">
+                                            <i class="fa fa-star me-1"/>Capitán
+                                        </span>
+                                    </t>
+                                    <t t-if="player.position">
+                                        <p class="text-muted small mb-0"><t t-esc="player.position"/></p>
+                                    </t>
+                                    <t t-if="player.number">
+                                        <p class="text-muted small mb-0">#<t t-esc="player.number"/></p>
+                                    </t>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </div>
+            </div>
+
+            <!-- Últimos Partidos del Equipo -->
+            <t t-if="past_matches">
+                <div class="bg-light py-4">
+                    <div class="container">
+                        <h2 class="border-bottom pb-2 mb-4">
+                            <i class="fa fa-history text-info me-2"/>
+                            Partidos Recientes
+                        </h2>
+                        <div class="row">
+                            <t t-foreach="past_matches[:5]" t-as="match">
+                                <div class="col-md-6 mb-3">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <div class="row align-items-center">
+                                                <div class="col-4 text-end">
+                                                    <t t-if="match.home_team_id.id == team.id">
+                                                        <span class="fw-bold"><t t-esc="match.home_team_id.name"/></span>
+                                                        <t t-if="match.home_team_id.image">
+                                                            <img t-att-src="'/web/image/beiscool.team/%s/image' % match.home_team_id.id" 
+                                                                 style="width: 30px; height: 30px; border-radius: 50%; margin-left: 10px;"/>
+                                                        </t>
+                                                    </t>
+                                                    <t t-else="t-else">
+                                                        <span class="fw-bold"><t t-esc="match.home_team_id.name"/></span>
+                                                        <t t-if="match.home_team_id.image">
+                                                            <img t-att-src="'/web/image/beiscool.team/%s/image' % match.home_team_id.id" 
+                                                                 style="width: 30px; height: 30px; border-radius: 50%; margin-left: 10px;"/>
+                                                        </t>
+                                                    </t>
+                                                </div>
+                                                <div class="col-4 text-center">
+                                                    <div class="h4 mb-0">
+                                                        <t t-esc="match.display_score"/>
+                                                    </div>
+                                                    <small class="text-muted"><t t-esc="match.match_date"/></small>
+                                                </div>
+                                                <div class="col-4 text-start">
+                                                    <t t-if="match.away_team_id.id == team.id">
+                                                        <t t-if="match.away_team_id.image">
+                                                            <img t-att-src="'/web/image/beiscool.team/%s/image' % match.away_team_id.id" 
+                                                                 style="width: 30px; height: 30px; border-radius: 50%; margin-right: 10px;"/>
+                                                        </t>
+                                                        <span class="fw-bold"><t t-esc="match.away_team_id.name"/></span>
+                                                    </t>
+                                                    <t t-else="t-else">
+                                                        <t t-if="match.away_team_id.image">
+                                                            <img t-att-src="'/web/image/beiscool.team/%s/image' % match.away_team_id.id" 
+                                                                 style="width: 30px; height: 30px; border-radius: 50%; margin-right: 10px;"/>
+                                                        </t>
+                                                        <span class="fw-bold"><t t-esc="match.away_team_id.name"/></span>
+                                                    </t>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </t>
+                        </div>
+                    </div>
+                </div>
+            </t>
+
+            <!-- Volver a la Copa -->
+            <t t-if="copa">
+                <div class="container py-4 text-center">
+                    <a t-attf-href="/copa/{{copa.id}}" class="btn btn-primary btn-lg">
+                        <i class="fa fa-arrow-left me-2"/>
+                        Volver a <t t-esc="copa.name"/>
+                    </a>
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <!-- Página de Lista de Copas -->
+    <template id="copas_list_page" name="Copas de Béisbol">
+        <t t-call="website.layout">
+            <div class="oe_structure"/>
+            <div class="container">
+                <h1 class="text-center my-5">
+                    <i class="fa fa-trophy text-warning me-3"/>
+                    Copas de Béisbol
+                </h1>
+                <div class="row">
+                    <t t-foreach="copas" t-as="copa">
+                        <div class="col-md-4 mb-4">
+                            <div class="card h-100">
+                                <div class="card-body text-center">
+                                    <h5 class="card-title"><t t-esc="copa.name"/></h5>
+                                    <p class="text-muted">
+                                        <t t-if="copa.location">
+                                            <i class="fa fa-map-marker me-1"/><t t-esc="copa.location"/><br/>
+                                        </t>
+                                        <t t-if="copa.date_start">
+                                            <i class="fa fa-calendar me-1"/><t t-esc="copa.date_start"/>
+                                        </t>
+                                    </p>
+                                    <span class="badge" t-att-class="'bg-success' if copa.state == 'in_progress' else 'bg-warning' if copa.state == 'draft' else 'bg-info'">
+                                        <t t-if="copa.state == 'draft'">Borrador</t>
+                                        <t t-if="copa.state == 'in_progress'">En Progreso</t>
+                                        <t t-if="copa.state == 'finished'">Finalizado</t>
+                                    </span>
+                                </div>
+                                <div class="card-footer">
+                                    <a t-attf-href="/copa/{{copa.id}}" class="btn btn-primary w-100">
+                                        Ver Copa <i class="fa fa-arrow-right ms-1"/>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </div>
+            </div>
+            <div class="oe_structure"/>
+        </t>
+    </template>
+</odoo>

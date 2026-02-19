@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Acción para Partido -->
+    <record id="beiscool_match_action" model="ir.actions.act_window">
+        <field name="name">Partidos</field>
+        <field name="res_model">beiscool.match</field>
+        <field name="view_mode">kanban,list,form,calendar</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Crea tu primer partido
+            </p>
+        </field>
+    </record>
+
+    <!-- Vista Kanban de Partido -->
+    <record id="beiscool_match_kanban" model="ir.ui.view">
+        <field name="name">beiscool.match.kanban</field>
+        <field name="model">beiscool.match</field>
+        <field name="arch" type="xml">
+            <kanban string="Partidos" sample="1">
+                <field name="name"/>
+                <field name="copa_id"/>
+                <field name="home_team_id"/>
+                <field name="away_team_id"/>
+                <field name="home_runs"/>
+                <field name="away_runs"/>
+                <field name="display_score"/>
+                <field name="winner_id"/>
+                <field name="match_date"/>
+                <field name="match_date_formatted"/>
+                <field name="stage"/>
+                <field name="state"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click">
+                            <div class="o_kanban_card_header">
+                                <div class="o_kanban_card_header_title">
+                                    <div class="o_kanban_tag_section">
+                                        <field name="state" widget="label_selection" 
+                                               options="{'classes': {'scheduled': 'warning', 'played': 'success', 'cancelled': 'danger'}}"/>
+                                        <span class="badge bg-info ms-1">
+                                            <field name="stage"/>
+                                        </span>
+                                    </div>
+                                    <b class="o_kanban_record_title fs-6">
+                                        <field name="name"/>
+                                    </b>
+                                </div>
+                            </div>
+                            <div class="o_kanban_card_body">
+                                <!-- Copa -->
+                                <div class="text-center mb-2" t-if="record.copa_id.value">
+                                    <i class="fa fa-trophy text-warning me-1"/>
+                                    <small class="text-muted" t-esc="record.copa_id.value"/>
+                                </div>
+                                <!-- Equipos y Marcador -->
+                                <div class="row align-items-center mb-2">
+                                    <div class="col-5 text-end">
+                                        <div class="h6 text-primary" t-esc="record.home_team_id.value or 'Local'"/>
+                                        <div class="badge bg-primary fs-4" t-esc="record.home_runs.raw_value || 0"/>
+                                    </div>
+                                    <div class="col-2 text-center">
+                                        <span class="text-muted">-</span>
+                                    </div>
+                                    <div class="col-5 text-start">
+                                        <div class="badge bg-info fs-4" t-esc="record.away_runs.raw_value || 0"/>
+                                        <div class="h6 text-info" t-esc="record.away_team_id.value or 'Visitante'"/>
+                                    </div>
+                                </div>
+                                <!-- Ganador destacado -->
+                                <div class="text-center mb-2" t-if="record.winner_id.value">
+                                    <div class="card bg-light">
+                                        <div class="card-body py-2">
+                                            <i class="fa fa-trophy text-warning me-1"/>
+                                            <strong class="text-success">GANADOR</strong>
+                                            <div class="h5 mt-1">
+                                                <field name="winner_id"/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Partido pendiente -->
+                                <div class="text-center mb-2" t-if="record.state.raw_value === 'scheduled'">
+                                    <span class="badge bg-warning text-dark">
+                                        <i class="fa fa-clock-o me-1"/>Partido Pendiente
+                                    </span>
+                                </div>
+                                <!-- Partido cancelado -->
+                                <div class="text-center mb-2" t-if="record.state.raw_value === 'cancelled'">
+                                    <span class="badge bg-danger">
+                                        <i class="fa fa-ban me-1"/>Partido Cancelado
+                                    </span>
+                                </div>
+                                <!-- Fecha -->
+                                <div class="row mt-2 pt-2 border-top">
+                                    <div class="col-12 text-center">
+                                        <i class="fa fa-calendar text-muted me-1"/>
+                                        <field name="match_date_formatted"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Vista Tree (List) de Partido -->
+    <record id="beiscool_match_list" model="ir.ui.view">
+        <field name="name">beiscool.match.list</field>
+        <field name="model">beiscool.match</field>
+        <field name="arch" type="xml">
+            <list string="Partidos" multi_edit="1" sample="1">
+                <field name="name"/>
+                <field name="copa_id"/>
+                <field name="home_team_id"/>
+                <field name="away_team_id"/>
+                <field name="display_score" string="Marcador"/>
+                <field name="winner_id"/>
+                <field name="match_date_formatted" string="Fecha y Hora"/>
+                <field name="stage"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Vista Form de Partido -->
+    <record id="beiscool_match_form" model="ir.ui.view">
+        <field name="name">beiscool.match.form</field>
+        <field name="model">beiscool.match</field>
+        <field name="arch" type="xml">
+            <form string="Partido">
+                <header>
+                    <button name="action_play" string="Marcar como Jugado" type="object" 
+                            class="btn-primary" invisible="state != 'scheduled'"/>
+                    <button name="action_cancel" string="Cancelar" type="object" 
+                            class="btn-secondary" invisible="state != 'scheduled'"/>
+                    <button name="action_reset" string="Restablecer" type="object" 
+                            class="btn-secondary" invisible="state == 'scheduled'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="scheduled,played,cancelled"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group string="Información del Partido">
+                            <field name="name"/>
+                            <field name="copa_id"/>
+                            <field name="match_date"/>
+                            <field name="stage"/>
+                            <field name="sequence"/>
+                        </group>
+                        <group string="Resultado">
+                            <field name="home_runs"/>
+                            <field name="away_runs"/>
+                            <field name="winner_id"/>
+                            <field name="is_tied"/>
+                        </group>
+                    </group>
+                    <group string="Equipos">
+                        <group>
+                            <field name="home_team_id"/>
+                        </group>
+                        <group>
+                            <field name="away_team_id"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- Vista Calendar de Partido -->
+    <record id="beiscool_match_calendar" model="ir.ui.view">
+        <field name="name">beiscool.match.calendar</field>
+        <field name="model">beiscool.match</field>
+        <field name="arch" type="xml">
+            <calendar string="Partidos" date_start="match_date" 
+                      color="stage">
+                <field name="name"/>
+                <field name="home_team_id"/>
+                <field name="away_team_id"/>
+                <field name="display_score"/>
+                <field name="stage"/>
+                <field name="state"/>
+            </calendar>
+        </field>
+    </record>
+</odoo>

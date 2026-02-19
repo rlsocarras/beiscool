@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Menú Principal -->
+    <menuitem id="menu_beiscool_root"
+              name="Gestión de Béisbol"
+              sequence="100"
+              web_icon="beiscool,static/description/icon.png"/>
+
+    <!-- Submenú Copas -->
+    <menuitem id="menu_beiscool_copa"
+              name="Copas"
+              parent="menu_beiscool_root"
+              action="beiscool_copa_action"
+              sequence="10"/>
+
+    <!-- Submenú Equipos -->
+    <menuitem id="menu_beiscool_team"
+              name="Equipos"
+              parent="menu_beiscool_root"
+              action="beiscool_team_action"
+              sequence="20"/>
+
+    <!-- Submenú Jugadores -->
+    <menuitem id="menu_beiscool_player"
+              name="Jugadores"
+              parent="menu_beiscool_root"
+              action="beiscool_player_action"
+              sequence="30"/>
+
+    <!-- Submenú Árbitros -->
+    <menuitem id="menu_beiscool_referee"
+              name="Árbitros"
+              parent="menu_beiscool_root"
+              action="beiscool_referee_action"
+              sequence="40"/>
+
+    <!-- Submenú Calendario -->
+    <menuitem id="menu_beiscool_calendar"
+              name="Calendario"
+              parent="menu_beiscool_root"
+              sequence="50"/>
+
+    <menuitem id="menu_beiscool_match"
+              name="Partidos"
+              parent="menu_beiscool_calendar"
+              action="beiscool_match_action"
+              sequence="10"/>
+
+    <!-- Submenú Estadísticas -->
+    <menuitem id="menu_beiscool_stats"
+              name="Estadísticas"
+              parent="menu_beiscool_root"
+              sequence="60"/>
+
+    <menuitem id="menu_beiscool_standings"
+              name="Tabla de Posiciones"
+              parent="menu_beiscool_stats"
+              action="beiscool_standings_action"
+              sequence="10"/>
+</odoo>

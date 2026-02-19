@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Acción para Equipo -->
+    <record id="beiscool_team_action" model="ir.actions.act_window">
+        <field name="name">Equipos</field>
+        <field name="res_model">beiscool.team</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Crea tu primer equipo
+            </p>
+        </field>
+    </record>
+
+    <!-- Vista Kanban de Equipo -->
+    <record id="beiscool_team_kanban" model="ir.ui.view">
+        <field name="name">beiscool.team.kanban</field>
+        <field name="model">beiscool.team</field>
+        <field name="arch" type="xml">
+            <kanban string="Equipos" sample="1">
+                <field name="name"/>
+                <field name="image"/>
+                <field name="player_quantity"/>
+                <field name="captain_id"/>
+                <field name="copa_id"/>
+                <field name="matches_played"/>
+                <field name="matches_won"/>
+                <field name="color"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click">
+                            <div class="o_kanban_card_header">
+                                <div class="o_kanban_card_header_title">
+                                    <div class="o_kanban_tag_section">
+                                        <span class="o_kanban_color_dot" t-attf-style="background-color: #{record.color.raw_value || 1};"/>
+                                    </div>
+                                    <b class="o_kanban_record_title fs-5">
+                                        <field name="name"/>
+                                    </b>
+                                </div>
+                            </div>
+                            <div class="o_kanban_card_body">
+                                <!-- Imagen del equipo -->
+                                <div class="text-center mb-2" t-if="record.image.raw_value">
+                                    <field name="image" widget="image" class="oe_avatar" options="{'preview_image': 'image', 'size': [200, 200]}"/>
+                                </div>
+                                <div class="text-center mb-2" t-else="t-else">
+                                    <img t-att-src="'/web/static/img/placeholder_team.png'" class="oe_avatar oe_kanban_avatar" alt="Equipo"/>
+                                </div>
+                                <!-- Información del capitán -->
+                                <div class="text-center mb-2" t-if="record.captain_id.value">
+                                    <small class="text-muted">Capitán:</small>
+                                    <div><b><field name="captain_id"/></b></div>
+                                </div>
+                                <!-- Copa -->
+                                <div class="text-center mb-2" t-if="record.copa_id.value">
+                                    <span class="badge bg-primary">
+                                        <i class="fa fa-trophy me-1"/><field name="copa_id"/>
+                                    </span>
+                                </div>
+                                <!-- Estadísticas -->
+                                <div class="row mt-2 pt-2 border-top">
+                                    <div class="col-6 text-center">
+                                        <div class="h4 mb-0 text-primary"><field name="player_quantity"/></div>
+                                        <small class="text-muted">Jugadores</small>
+                                    </div>
+                                    <div class="col-6 text-center">
+                                        <div class="h4 mb-0 text-success"><field name="matches_won"/></div>
+                                        <small class="text-muted">Victorias</small>
+                                    </div>
+                                </div>
+                                <div class="row mt-1">
+                                    <div class="col-12 text-center">
+                                        <small class="text-muted">
+                                            <field name="matches_played"/> partidos jugados
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Vista Tree (List) de Equipo -->
+    <record id="beiscool_team_list" model="ir.ui.view">
+        <field name="name">beiscool.team.list</field>
+        <field name="model">beiscool.team</field>
+        <field name="arch" type="xml">
+            <list string="Equipos" multi_edit="1" sample="1">
+                <field name="name"/>
+                <field name="player_quantity"/>
+                <field name="captain_id"/>
+                <field name="copa_id"/>
+                <field name="matches_played"/>
+                <field name="matches_won"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Vista Form de Equipo -->
+    <record id="beiscool_team_form" model="ir.ui.view">
+        <field name="name">beiscool.team.form</field>
+        <field name="model">beiscool.team</field>
+        <field name="arch" type="xml">
+            <form string="Equipo">
+                <sheet>
+                    <field name="image" widget="image" class="oe_avatar" 
+                           options="{'preview_image': 'image_medium'}"/>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" placeholder="Nombre del Equipo"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Información del Equipo">
+                            <field name="copa_id"/>
+                            <field name="captain_id"/>
+                            <field name="player_quantity"/>
+                            <field name="color" widget="color_picker"/>
+                        </group>
+                        <group string="Estadísticas">
+                            <field name="matches_played" string="Partidos Jugados"/>
+                            <field name="matches_won" string="Partidos Ganados"/>
+                        </group>
+                    </group>
+                    <group string="Jugadores">
+                        <field name="player_ids" nolabel="1">
+                            <list>
+                                <field name="name"/>
+                                <field name="email"/>
+                                <field name="phone"/>
+                                <field name="is_captain"/>
+                                <field name="position"/>
+                                <field name="number"/>
+                            </list>
+                        </field>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>

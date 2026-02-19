@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Árbitros de Demostración -->
+    <record id="demo_referee_1" model="beiscool.referee">
+        <field name="name">Carlos Rodríguez</field>
+        <field name="email">carlos.rodriguez@beisbol.com</field>
+        <field name="phone">+1 555-0101</field>
+        <field name="certification">Nacional</field>
+        <field name="level">national</field>
+        <field name="experience_years">10</field>
+    </record>
+
+    <record id="demo_referee_2" model="beiscool.referee">
+        <field name="name">Miguel Hernández</field>
+        <field name="email">miguel.hernandez@beisbol.com</field>
+        <field name="phone">+1 555-0102</field>
+        <field name="certification">Regional</field>
+        <field name="level">regional</field>
+        <field name="experience_years">5</field>
+    </record>
+
+    <record id="demo_referee_3" model="beiscool.referee">
+        <field name="name">José Luis Martínez</field>
+        <field name="email">jose.martinez@beisbol.com</field>
+        <field name="phone">+1 555-0103</field>
+        <field name="certification">Nacional</field>
+        <field name="level">national</field>
+        <field name="experience_years">8</field>
+    </record>
+
+    <record id="demo_referee_4" model="beiscool.referee">
+        <field name="name">Francisco Gómez</field>
+        <field name="email">francisco.gomez@beisbol.com</field>
+        <field name="phone">+1 555-0104</field>
+        <field name="certification">Local</field>
+        <field name="level">local</field>
+        <field name="experience_years">3</field>
+    </record>
+
+    <!-- Jugadores de Demostración -->
+    <record id="demo_player_1" model="beiscool.player">
+        <field name="name">Juan Pérez</field>
+        <field name="email">juan.perez@email.com</field>
+        <field name="phone">+1 555-1001</field>
+        <field name="is_captain">True</field>
+        <field name="position">Lanzador</field>
+        <field name="number">10</field>
+    </record>
+
+    <record id="demo_player_2" model="beiscool.player">
+        <field name="name">Pedro López</field>
+        <field name="email">pedro.lopez@email.com</field>
+        <field name="phone">+1 555-1002</field>
+        <field name="is_captain">True</field>
+        <field name="position">Catchers</field>
+        <field name="number">2</field>
+    </record>
+
+    <record id="demo_player_3" model="beiscool.player">
+        <field name="name">Antonio García</field>
+        <field name="email">antonio.garcia@email.com</field>
+        <field name="phone">+1 555-1003</field>
+        <field name="is_captain">True</field>
+        <field name="position">Primera Base</field>
+        <field name="number">3</field>
+    </record>
+
+    <record id="demo_player_4" model="beiscool.player">
+        <field name="name">Luis Martínez</field>
+        <field name="email">luis.martinez@email.com</field>
+        <field name="phone">+1 555-1004</field>
+        <field name="is_captain">True</field>
+        <field name="position">Shortstop</field>
+        <field name="number">6</field>
+    </record>
+
+    <record id="demo_player_5" model="beiscool.player">
+        <field name="name">Carlos Sánchez</field>
+        <field name="email">carlos.sanchez@email.com</field>
+        <field name="phone">+1 555-1005</field>
+        <field name="position">Jardinero</field>
+        <field name="number">9</field>
+    </record>
+
+    <record id="demo_player_6" model="beiscool.player">
+        <field name="name">Roberto Díaz</field>
+        <field name="email">roberto.diaz@email.com</field>
+        <field name="phone">+1 555-1006</field>
+        <field name="position">Lanzador</field>
+        <field name="number">15</field>
+    </record>
+
+    <record id="demo_player_7" model="beiscool.player">
+        <field name="name">Fernando Torres</field>
+        <field name="email">fernando.torres@email.com</field>
+        <field name="phone">+1 555-1007</field>
+        <field name="position">Segunda Base</field>
+        <field name="number">4</field>
+    </record>
+
+    <record id="demo_player_8" model="beiscool.player">
+        <field name="name">Jorge Rivera</field>
+        <field name="email">jorge.rivera@email.com</field>
+        <field name="phone">+1 555-1008</field>
+        <field name="position">Tercera Base</field>
+        <field name="number">5</field>
+    </record>
+
+    <record id="demo_player_9" model="beiscool.player">
+        <field name="name">Alberto Castro</field>
+        <field name="email">alberto.castro@email.com</field>
+        <field name="phone">+1 555-1009</field>
+        <field name="position">Lanzador</field>
+        <field name="number">20</field>
+    </record>
+
+    <record id="demo_player_10" model="beiscool.player">
+        <field name="name">Ricardo Morales</field>
+        <field name="email">ricardo.morales@email.com</field>
+        <field name="phone">+1 555-1010</field>
+        <field name="position">Catchers</field>
+        <field name="number">12</field>
+    </record>
+
+    <record id="demo_player_11" model="beiscool.player">
+        <field name="name">Eduardo Núñez</field>
+        <field name="email">eduardo.nunez@email.com</field>
+        <field name="phone">+1 555-1011</field>
+        <field name="position">Jardinero</field>
+        <field name="number">7</field>
+    </record>
+
+    <record id="demo_player_12" model="beiscool.player">
+        <field name="name">Daniel Flores</field>
+        <field name="email">daniel.flores@email.com</field>
+        <field name="phone">+1 555-1012</field>
+        <field name="position">Primera Base</field>
+        <field name="number">18</field>
+    </record>
+
+    <record id="demo_player_13" model="beiscool.player">
+        <field name="name">Mario Vargas</field>
+        <field name="email">mario.vargas@email.com</field>
+        <field name="phone">+1 555-1013</field>
+        <field name="position">Shortstop</field>
+        <field name="number">11</field>
+    </record>
+
+    <record id="demo_player_14" model="beiscool.player">
+        <field name="name">Sergio Romero</field>
+        <field name="email">sergio.romero@email.com</field>
+        <field name="phone">+1 555-1014</field>
+        <field name="position">Lanzador</field>
+        <field name="number">25</field>
+    </record>
+
+    <record id="demo_player_15" model="beiscool.player">
+        <field name="name">Alejandro Herrera</field>
+        <field name="email">alejandro.herrera@email.com</field>
+        <field name="phone">+1 555-1015</field>
+        <field name="position">Jardinero</field>
+        <field name="number">8</field>
+    </record>
+
+    <record id="demo_player_16" model="beiscool.player">
+        <field name="name">Gabriel Jiménez</field>
+        <field name="email">gabriel.jimenez@email.com</field>
+        <field name="phone">+1 555-1016</field>
+        <field name="position">Segunda Base</field>
+        <field name="number">14</field>
+    </record>
+
+    <!-- Copa de Demostración -->
+    <record id="demo_copa" model="beiscool.copa">
+        <field name="name">Copa Béisbol Primavera 2026</field>
+        <field name="date_start">2026-03-01</field>
+        <field name="date_end">2026-05-30</field>
+        <field name="location">Estadio Nacional de Béisbol</field>
+        <field name="organizer">Federación de Béisbol Local</field>
+        <field name="description">Copa de béisbol de primavera 2026 con equipos de la región</field>
+        <field name="rounds">1</field>
+        <field name="has_semifinal">True</field>
+        <field name="has_final">True</field>
+        <field name="state">draft</field>
+        <field name="referee_ids" eval="[
+            (4, ref('demo_referee_1')),
+            (4, ref('demo_referee_2')),
+            (4, ref('demo_referee_3')),
+            (4, ref('demo_referee_4')),
+        ]"/>
+    </record>
+
+    <!-- Equipos de Demostración -->
+    <record id="demo_team_1" model="beiscool.team">
+        <field name="name">Tigres de la Universidad</field>
+        <field name="copa_id" ref="demo_copa"/>
+        <field name="captain_id" ref="demo_player_1"/>
+        <field name="color">1</field>
+        <field name="player_ids" eval="[
+            (4, ref('demo_player_1')),
+            (4, ref('demo_player_5')),
+            (4, ref('demo_player_9')),
+            (4, ref('demo_player_13')),
+        ]"/>
+    </record>
+
+    <record id="demo_team_2" model="beiscool.team">
+        <field name="name">Leones del Norte</field>
+        <field name="copa_id" ref="demo_copa"/>
+        <field name="captain_id" ref="demo_player_2"/>
+        <field name="color">2</field>
+        <field name="player_ids" eval="[
+            (4, ref('demo_player_2')),
+            (4, ref('demo_player_6')),
+            (4, ref('demo_player_10')),
+            (4, ref('demo_player_14')),
+        ]"/>
+    </record>
+
+    <record id="demo_team_3" model="beiscool.team">
+        <field name="name">Águilas Doradas</field>
+        <field name="copa_id" ref="demo_copa"/>
+        <field name="captain_id" ref="demo_player_3"/>
+        <field name="color">3</field>
+        <field name="player_ids" eval="[
+            (4, ref('demo_player_3')),
+            (4, ref('demo_player_7')),
+            (4, ref('demo_player_11')),
+            (4, ref('demo_player_15')),
+        ]"/>
+    </record>
+
+    <record id="demo_team_4" model="beiscool.team">
+        <field name="name">Halcones de la Costa</field>
+        <field name="copa_id" ref="demo_copa"/>
+        <field name="captain_id" ref="demo_player_4"/>
+        <field name="color">4</field>
+        <field name="player_ids" eval="[
+            (4, ref('demo_player_4')),
+            (4, ref('demo_player_8')),
+            (4, ref('demo_player_12')),
+            (4, ref('demo_player_16')),
+        ]"/>
+    </record>
+</odoo>
